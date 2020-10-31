@@ -4,6 +4,7 @@
   <head>
     <meta charset="utf-8">
     <title>Font Texture Generator Online</title>
+    <link rel='preconnect' href='https://fonts.gstatic.com' crossorigin>
     <style>
       body, input, textarea {
         font: 14px/20px sans-serif;
@@ -72,6 +73,12 @@
         border: 1px solid #CCC;
         box-sizing: border-box;
       }
+
+      #fontLoader {
+        position: fixed;
+        top: -1000px;
+        left: -1000px;
+      }
     </style>
   </head>
   <body>
@@ -87,7 +94,7 @@
       <tr>
         <th>Font name: &nbsp;</th>
         <td>
-          <input type="text" id="fontName" value="Arial" autofocus>
+          <input type="text" id="fontName" value="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" autofocus>
           &nbsp;
           <label>
             <input type="checkbox" id="fontBold">
@@ -113,6 +120,19 @@
           <label>
             <input type="radio" name="resolution" id="resolutionPowerOf2">
             Power of 2
+          </label>
+        </td>
+      </tr>
+      <tr>
+        <th>Advanced Dimensions: &nbsp;</th>
+        <td>
+          <label>
+            <input type="text" name="xOffset" id="xOffset" value="0">
+            X Offset &nbsp;
+          </label>
+          <label>
+            <input type="text" name="yOffset" id="yOffset" value="0">
+            Y Offset
           </label>
         </td>
       </tr>
@@ -466,7 +486,23 @@
 
   function checkFontName() {
     fontName = textboxFontName.value;
-    textboxFontName.className = isValidFontName(fontName) ? '' : 'invalid';
+
+    var fontLink = document.createElement('link');
+    fontLink.href = fontName;
+    fontLink.rel = "stylesheet";
+    document.head.appendChild(fontLink);
+
+    var fontLoader = document.getElementById("fontLoader");
+    if(fontLoader === null) {
+      var fontLoader = document.createElement('div');
+      fontLoader.id = "fontLoader";
+      fontLoader.innerText = "a";
+      document.body.appendChild(fontLoader);
+    }
+    var regex = /family=(.*)&/;
+    var extractedFontName = fontName.match(regex)[1].replace("+", " ");
+    fontLoader.style.fontFamily = extractedFontName;
+    // textboxFontName.className = isValidFontName(fontName) ? '' : 'invalid';
     updateGenerate();
   }
 
@@ -558,10 +594,12 @@
     var height = canvas.height = size * multiplier;
     var bg = checkboxDisplayTypeDistanceField.checked ? {r: 0, g: 0, b: 0, a: 0} : backgroundColor;
 
+    var regex = /family=(.*)&/;
+    var extractedFontName = fontName.match(regex)[1].replace("+", " ");
     context.font =
       (checkboxFontBold.checked ? 'bold ' : '') +
       (checkboxFontItalic.checked ? 'italic ' : '') +
-      size + 'px ' + JSON.stringify(fontName);
+      size + 'px ' + JSON.stringify(extractedFontName);
     context.textAlign = 'left';
     context.textBaseline = 'alphabetic';
     context.lineWidth = strokeThickness * 2;
