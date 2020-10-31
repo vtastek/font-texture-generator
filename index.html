@@ -94,7 +94,7 @@
       <tr>
         <th>Font name: &nbsp;</th>
         <td>
-          <input type="text" id="fontName" value="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" autofocus>
+          <input type="text" id="fontName" value="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" size="60" autofocus>
           &nbsp;
           <label>
             <input type="checkbox" id="fontBold">
@@ -187,7 +187,10 @@
               </tr>
               <tr>
                 <th>Background color: &nbsp;</th>
-                <td><input type="text" id="backgroundColor" value="#000"></td>
+                <td>
+                  <input type="text" id="backgroundColor" value="#000">
+                  <button id="backgroundColorButton">Transparent</button>
+                </td>
               </tr>
               <tr>
                 <th>Stroke color: &nbsp;</th>
@@ -257,6 +260,7 @@
   var optionsDisplayTypeNormal = document.getElementById('displayTypeNormalOptions');
   var textarea = document.createElement('textarea');
   var textboxBackgroundColor = document.getElementById('backgroundColor');
+  var buttonBackgroundColor = document.getElementById('backgroundColorButton');
   var textboxCustomCharacters = document.getElementById('customCharacters');
   var textboxDistanceFieldFalloff = document.getElementById('distanceFieldFalloff');
   var textboxFillColor = document.getElementById('fillColor');
@@ -552,6 +556,11 @@
     backgroundColor = parseColor(textboxBackgroundColor.value);
     textboxBackgroundColor.className = backgroundColor !== null ? '' : 'invalid';
     updateGenerate();
+  }
+
+  function setBackgroundColorTransparent() {
+    textboxBackgroundColor.value = "none";
+    checkBackgroundColor();
   }
 
   function handleArrowKeys(e) {
@@ -1175,6 +1184,7 @@
   checkboxStrokeJoinRound.onchange = generate;
 
   textboxBackgroundColor.oninput = checkBackgroundColor;
+  buttonBackgroundColor.onclick = setBackgroundColorTransparent;
   textboxDistanceFieldFalloff.oninput = checkDistanceFieldFalloff;
   textboxFillColor.oninput = checkFillColor;
   textboxFontName.oninput = checkFontName;
