@@ -13,6 +13,7 @@
     var checkboxFontBold = document.getElementById('fontBold');
     var checkboxFontItalic = document.getElementById('fontItalic');
     var checkboxResolutionPowerOf2 = document.getElementById('resolutionPowerOf2');
+    var checkboxResolutionSquare = document.getElementById('resolutionSquare');
     var checkboxResolutionSmallest = document.getElementById('resolutionSmallest');
     var checkboxStrokeJoinMiter = document.getElementById('strokeJoinMiter');
     var checkboxStrokeJoinRound = document.getElementById('strokeJoinRound');
@@ -573,6 +574,15 @@
         return value;
     }
 
+    function squareRes(target) {
+        var value = 2;
+        while (value < target) {
+            value *= 2;
+        }
+        return value;
+    }
+
+
     function pack(images) {
         var maxWidth = 0;
         var totalArea = 0;
@@ -605,6 +615,12 @@
             width = nextPowerOf2(width);
         }
 
+        if (checkboxResolutionSquare.checked) {
+            width = squareRes(width);
+        }
+
+
+
         var currentX = 0;
         var currentY = 0;
         var rowWidth = 0;
@@ -632,8 +648,15 @@
             height = nextPowerOf2(height);
         }
 
+        if (checkboxResolutionSquare.checked) {
+            height = squareRes(height);
+        }
+
+        var returnWidth = checkboxResolutionPowerOf2.checked ? width : rowWidth;
+        returnWidth = checkboxResolutionSquare.checked ? width : rowWidth;
+        
         return {
-            width: checkboxResolutionPowerOf2.checked ? width : rowWidth,
+            width: returnWidth,
             height: height,
             coordinates: coordinates.slice(),
         };
@@ -938,6 +961,7 @@
     checkboxDisplayTypeNormal.onchange = updateDisplayType;
     checkboxFontBold.onchange = generate;
     checkboxFontItalic.onchange = generate;
+    checkboxResolutionSquare.onchange = generate;
     checkboxResolutionPowerOf2.onchange = generate;
     checkboxResolutionSmallest.onchange = generate;
     checkboxStrokeJoinMiter.onchange = generate;
